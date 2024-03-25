@@ -10,6 +10,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/oschwald/maxminddb-golang v1.12.0
 	github.com/pion/stun/v2 v2.0.0
+	github.com/robfig/cron v1.2.0
 	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.6.1

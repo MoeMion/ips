@@ -51,5 +51,7 @@ var serverCmd = &cobra.Command{
 }
 
 func Server(cmd *cobra.Command, args []string) {
+	AutoUpdate()
+
 	manager.Service()
 }

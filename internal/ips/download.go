@@ -31,40 +31,14 @@ import (
 	"github.com/sjzar/ips/internal/util"
 )
 
-/*
-Download Database Files
-
-IPDB
-City Free (2018-11-18): https://raw.githubusercontent.com/ipipdotnet/ipdb-go/master/city.free.ipdb
-
-CZ88.NET
-qqwry.dat: https://github.com/HMBSbige/qqwry/releases/download/2023-11-01/qqwry.dat
-qqwry.dat Mirror 2: https://github.com/metowolf/qqwry.dat/releases/download/20231025/qqwry.dat
-
-MaxMind
-GeoLite2-City.mmdb (2023-10-16): https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-City.mmdb (https://git.io/GeoLite2-City.mmdb)
-
-ZX Inc.
-zxipv6wry.db (2021-05-11): https://raw.githubusercontent.com/ZX-Inc/zxipdb-python/main/data/ipv6wry.db
-zxipv6wry.db Mirror 2 (2021-05-11): https://ip.zxinc.org/ip.7z
-
-ip2region
-ip2region.db (2022-12-07): https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.xdb
-
-DB-IP
-dbip-city-lite.mmdb (2023-11): https://download.db-ip.com/free/dbip-city-lite-2023-11.mmdb.gz
-dbip-asn-lite.mmdb (2023-11): https://download.db-ip.com/free/dbip-asn-lite-2023-11.mmdb.gz
-
-*/
-
 var DownloadMap = map[string]string{
 	"city.free.ipdb":      "https://raw.githubusercontent.com/ipipdotnet/ipdb-go/master/city.free.ipdb",
-	"qqwry.dat":           "https://github.com/metowolf/qqwry.dat/releases/download/20231025/qqwry.dat",
+	"qqwry.dat":           "https://github.com/metowolf/qqwry.dat/releases/latest/download/qqwry.dat",
 	"zxipv6wry.db":        "https://raw.githubusercontent.com/ZX-Inc/zxipdb-python/main/data/ipv6wry.db",
 	"GeoLite2-City.mmdb":  "https://git.io/GeoLite2-City.mmdb",
 	"ip2region.xdb":       "https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.xdb",
-	"dbip-city-lite.mmdb": "https://download.db-ip.com/free/dbip-city-lite-2023-11.mmdb.gz",
-	"dbip-asn-lite.mmdb":  "https://download.db-ip.com/free/dbip-asn-lite-2023-11.mmdb.gz",
+	"dbip-city-lite.mmdb": "https://download.db-ip.com/free/dbip-city-lite-2024-03.mmdb.gz",
+	"dbip-asn-lite.mmdb":  "https://download.db-ip.com/free/dbip-asn-lite-2024-03.mmdb.gz",
 }
 
 // Download downloads the database file to ips dir.

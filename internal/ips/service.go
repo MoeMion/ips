@@ -24,9 +24,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/sjzar/ips/internal/parser"
-	"github.com/sjzar/ips/pkg/model"
 )
 
 // Service initializes and runs the main web service for the application.
@@ -64,16 +61,18 @@ var EFS embed.FS
 // It defines endpoints for API as well as serving static content.
 func (m *Manager) InitRouter() {
 	staticDir, _ := fs.Sub(EFS, "static")
-	m.router.StaticFS("/static", http.FS(staticDir))
+	// m.router.StaticFS("/static", http.FS(staticDir))
 	m.router.StaticFileFS("/favicon.ico", "./favicon.ico", http.FS(staticDir))
-	m.router.StaticFileFS("/", "./index.htm", http.FS(staticDir))
+	// m.router.StaticFileFS("/", "./index.htm", http.FS(staticDir))
 
-	// API Router
-	api := m.router.Group("/api")
-	{
-		api.GET("/v1/ip", m.GetIP)
-		api.GET("/v1/query", m.GetQuery)
-	}
+	// // API Router
+	// api := m.router.Group("/api")
+	// {
+	// 	api.GET("/v1/ip", m.GetIP)
+	// 	api.GET("/v1/query", m.GetQuery)
+	// }
+	m.router.GET("/", m.GetIP)
+	m.router.GET("/:ip", m.GetIP)
 
 	m.router.NoRoute(m.NoRoute)
 }
@@ -91,53 +90,19 @@ func (m *Manager) NoRoute(c *gin.Context) {
 	}
 }
 
-// GetIP handles the GET /v1/ip endpoint. It takes an IP as a query parameter
-// and returns its associated information in JSON format.
-// Example:
-// GET /v1/ip?ip=<ip>
-// Response:
-// {}
 func (m *Manager) GetIP(c *gin.Context) {
-	info, err := m.parseIP(c.Query("ip"))
+	ip := c.Param("ip")
+
+	if ip == "" {
+		//get the client ip
+		ip = c.ClientIP()
+	}
+
+	info, err := m.parseIP(ip)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, info.Output(m.Conf.UseDBFields))
-}
-
-// GetQuery handles the GET /v1/query endpoint. It takes a text string as a query
-// parameter, parses it into segments, and returns the information associated with each segment.
-// Example:
-// GET /v1/query?text=<text>
-// Response:
-// {"items": [{},{}]}
-func (m *Manager) GetQuery(c *gin.Context) {
-
-	text := c.Query("text")
-	if len(text) == 0 && len(c.Request.URL.RawQuery) > 0 {
-		text = c.Request.URL.RawQuery
-	}
-
-	ret := &model.DataList{}
-
-	tp := parser.NewTextParser(text).Parse()
-
-	for _, segment := range tp.Segments {
-		info, err := m.parseSegment(segment)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		switch v := info.(type) {
-		case *model.IPInfo:
-			ret.AddItem(v.Output(m.Conf.UseDBFields))
-		case *model.DomainInfo:
-			ret.AddDomain(v)
-		}
-	}
-
-	c.JSON(http.StatusOK, ret)
 }

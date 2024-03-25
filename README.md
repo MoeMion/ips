@@ -1,3 +1,11 @@
+魔改记录：
+
+1. 程序运行在server模式时，第一次运行和每天00:00更新所有数据库。
+2. 修改默认的数据库下载地址。
+3. 修改API，仅保留`GET /[ip]`，当ip为空时返回本机IP。
+
+以下是原项目repo
+
 ## IPS
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/sjzar/ips)](https://goreportcard.com/report/github.com/sjzar/ips)
