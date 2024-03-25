@@ -94,8 +94,7 @@ func (m *Manager) GetIP(c *gin.Context) {
 	ip := c.Param("ip")
 
 	if ip == "" {
-		//get the client ip
-		ip = c.ClientIP()
+		ip = getClientIP(c)
 	}
 
 	info, err := m.parseIP(ip)
@@ -105,4 +104,25 @@ func (m *Manager) GetIP(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, info.Output(m.Conf.UseDBFields))
+}
+
+func getClientIP(c *gin.Context) string {
+	// 首先尝试从X-Forwarded-For头信息获取客户端IP
+	xForwardedFor := c.Request.Header.Get("X-Forwarded-For")
+	if xForwardedFor != "" {
+		// X-Forwarded-For可能包含多个IP，第一个通常是客户端的原始IP
+		ips := strings.Split(xForwardedFor, ",")
+		if len(ips) > 0 && ips[0] != "" {
+			return strings.TrimSpace(ips[0])
+		}
+	}
+
+	// 如果X-Forwarded-For头信息不存在或不包含IP，则尝试从X-Real-IP获取
+	xRealIP := c.Request.Header.Get("X-Real-IP")
+	if xRealIP != "" {
+		return xRealIP
+	}
+
+	// 如果以上方法都未能获取到IP，则回退到Gin的默认方法
+	return c.ClientIP()
 }
